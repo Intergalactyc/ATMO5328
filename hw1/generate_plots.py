@@ -4,7 +4,7 @@ import pathlib
 
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib import colors
+from matplotlib import colors, cm
 
 
 SAVEDIR = pathlib.Path(__file__).parent / "plots"
@@ -22,11 +22,12 @@ def plot_contours(phi):
     solution = phi(xx, 0, zz)
 
     fig, ax = plt.subplots()
-    contour = ax.contourf(x, z, solution, levels=10)
+    contour = ax.contour(x, z, solution, levels=25, linewidth=0.5)
     ax.set_aspect("equal")
     ax.set_xlabel("X")
     ax.set_ylabel("Z")
-    fig.colorbar(contour)
+    mappable = cm.ScalarMappable(norm=contour.norm, cmap=contour.cmap)
+    fig.colorbar(mappable, ax=ax)
 
     plt.savefig(SAVEDIR / "contours.png")
 
@@ -38,6 +39,7 @@ def plot_vectors(phi):
     z = np.linspace(0, 40, 40)
     xx, zz = np.meshgrid(x, z)
     solution = phi(xx, 0, zz)
+    print(solution.shape)
     ax.quiver(xx, zz, 0, solution, scale=0.4, width=0.004, minlength=0.1)
 
     ax.set_aspect("equal")
